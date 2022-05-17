@@ -653,3 +653,17 @@ section {
   flex-direction: column;
   margin-bottom: 20px;
 }
+
+.appointments {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  align-items: center;
+ 
+}
+
+.appointment__item {
+  display: flex;
+  flex-direction: column;
+  margin: 5px;  
+}

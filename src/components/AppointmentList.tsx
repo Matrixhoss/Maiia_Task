@@ -1,14 +1,60 @@
-import EditorLink from './EditorLink';
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  List,
+  Typography,
+} from '@material-ui/core';
+import { formatDateRange } from 'utils/date';
+import { practitionersSelectors } from 'store/practitioners';
+import { patientsSelectors } from 'store/patients';
+import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
 
-const AppointmentList = () => {
+const AppointmentList = ({ practitioners, patients, appointments }) => {
+  // utils functions
+  const getAppointmentPractitioner = (id) =>
+    practitionersSelectors.selectById(practitioners, id);
+  const getAppointmentPatient = (id) =>
+    patientsSelectors.selectById(patients, id);
+  const getTimeSlotDatacy = (id: string) => `timeslot-${id}`;
+
   return (
-    <div>
-      Edit
-      <EditorLink path="src/components/AppointmentList.tsx">
-        "src/components/AppointmentForm.tsx"
-      </EditorLink>{' '}
-      to display the list of appointments.
-    </div>
+    appointments && (
+      <List className="appointments" datacy="timeslot-list">
+        {appointments.map((item) => {
+          const practitioner = getAppointmentPractitioner(item.practitionerId);
+          const patient = getAppointmentPatient(item.patientId);
+          return (
+            <Card
+              key={item.id}
+              datacy={getTimeSlotDatacy(item.id)}
+              className="appointment__item btn"
+            >
+              <CardHeader
+                avatar={<CalendarTodayIcon />}
+                title={
+                  <Typography datacy={`${getTimeSlotDatacy(item.id)}-range`}>
+                    {formatDateRange({
+                      from: new Date(item.startDate),
+                      to: new Date(item.endDate),
+                    })}
+                  </Typography>
+                }
+              />
+              <CardContent>
+                <Typography>
+                  Practitioner :
+                  {`${practitioner?.firstName} ${practitioner?.lastName}`}
+                </Typography>
+                <Typography>
+                  Patient : {`${patient?.firstName} ${patient?.lastName}`}
+                </Typography>
+              </CardContent>
+            </Card>
+          );
+        })}
+      </List>
+    )
   );
 };
 
