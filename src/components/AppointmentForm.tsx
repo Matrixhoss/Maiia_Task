@@ -4,31 +4,56 @@ import React from 'react';
 import { availabilitiesSelectors } from 'store/availabilities';
 import { patientsSelectors } from 'store/patients';
 import { practitionersSelectors } from 'store/practitioners';
-import { formatDateRange } from 'utils/date';
+import { formatDateRange, formatDateRangeEdit } from 'utils/date';
+import {
+  Appointment,
+  Patient,
+  Availability,
+  Practitioner,
+} from '@prisma/client';
 import * as yup from 'yup';
 
+interface IProps {
+  patients: any;
+  availabilities: any;
+  practitioners: any;
+  getAvailabilities: any;
+  addNewAppointment: any;
+  handleEditAppointment?: any;
+  defaultValue?: Appointment;
+  type: string;
+}
 interface FormValues {
-  practitionerId: string;
-  patientId: string;
-  availability: string;
+  practitionerId: any;
+  patientId: any;
+  availability: any;
 }
 
-const AppointmentForm = ({
+const AppointmentForm: React.FC<IProps> = ({
   patients,
   availabilities,
   practitioners,
   getAvailabilities,
   addNewAppointment,
+  handleEditAppointment,
+  defaultValue,
+  type,
 }) => {
   const allPatients = patientsSelectors?.selectAll(patients);
   const allPractitioners = practitionersSelectors?.selectAll(practitioners);
   const allAvailabilities = availabilitiesSelectors?.selectAll(availabilities);
 
-  const initialValues: FormValues = {
-    practitionerId: '',
-    availability: '',
-    patientId: '',
-  };
+  const initialValues: FormValues = defaultValue
+    ? {
+        practitionerId: defaultValue.practitionerId,
+        availability: `${defaultValue.startDate} ${defaultValue.endDate}`,
+        patientId: defaultValue.patientId,
+      }
+    : {
+        practitionerId: '',
+        availability: '',
+        patientId: '',
+      };
 
   const validationSchema = yup.object({
     practitionerId: yup.string().required('Please Select the practitioner'),
@@ -59,7 +84,9 @@ const AppointmentForm = ({
       startDate,
       endDate,
     };
-    addNewAppointment(data);
+    type === 'edit'
+      ? handleEditAppointment({ ...defaultValue, ...data })
+      : addNewAppointment(data);
     resetForm();
   };
 
@@ -96,7 +123,6 @@ const AppointmentForm = ({
         fullWidth
         select
         id="patientId"
-        ß
         name="patientId"
         label="Patients"
         variant="outlined"

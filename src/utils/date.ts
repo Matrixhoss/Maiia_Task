@@ -12,3 +12,13 @@ export const formatDateRange = (range: Range) => {
   const { from, to } = range;
   return `${formatDate(from)} ${formatTime(from)} - ${formatTime(to)}`;
 };
+
+export const formatDateEdit = (date: Date) => format(date, DATE_FORMAT);
+export const formatTimeEdit = (date: Date) => format(date, TIME_FORMAT);
+
+export const formatDateRangeEdit = (range: Range) => {
+  const { from, to } = range;
+  return `${formatDateEdit(from)} ${formatTimeEdit(from)} - ${formatTimeEdit(
+    to,
+  )}`;
+};

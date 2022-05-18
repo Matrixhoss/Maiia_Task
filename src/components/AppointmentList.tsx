@@ -1,7 +1,6 @@
 import {
   Button,
   Card,
-  CardActionArea,
   CardActions,
   CardContent,
   CardHeader,
@@ -18,6 +17,7 @@ const AppointmentList = ({
   patients,
   appointments,
   handleDeleteAppointment,
+  handleEditAppointment,
 }) => {
   // utils functions
   const getAppointmentPractitioner = (id) =>
@@ -59,6 +59,12 @@ const AppointmentList = ({
                 </Typography>
               </CardContent>
               <CardActions>
+                <Button
+                  variant="outlined"
+                  onClick={() => handleEditAppointment(item)}
+                >
+                  Edit
+                </Button>
                 <Button
                   style={{ backgroundColor: '#f44949', color: '#fff' }}
                   onClick={() => {

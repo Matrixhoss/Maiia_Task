@@ -7,15 +7,29 @@ import {
   appointmentsSelectors,
   deleteAppointments,
   getAppointments,
+  updateAppointments,
 } from 'store/appointments';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { getPatients } from 'store/patients';
 import { getPractitioners } from 'store/practitioners';
 import { getAvailabilities } from 'store/availabilities';
+import EditDialog from 'components/EditDialog';
 
 const AppointmentsPage = () => {
+  // const
   const dispatch = useDispatch();
+
+  // states
+  const [openDialog, setOpenDialog] = useState(false);
+  const [editItem, setEditItem] = useState({
+    id: 0,
+    patientId: 0,
+    practitionerId: 0,
+    startDate: new Date(),
+    endDate: new Date(),
+  });
+
   // on mount
   useEffect(() => {
     dispatch(getPractitioners());
@@ -33,6 +47,17 @@ const AppointmentsPage = () => {
 
   const handleDeleteAppointment = (id) => {
     dispatch(deleteAppointments(id));
+  };
+
+  const handleEditAppointment = (data) => {
+    setOpenDialog(false);
+    dispatch(updateAppointments(data));
+  };
+
+  const handleOpenEditForm = (item) => {
+    setOpenDialog(true);
+    getAvailabilitiesFormAPI(item.practitionerId);
+    setEditItem(item);
   };
 
   // Redux Store Data
@@ -90,6 +115,7 @@ const AppointmentsPage = () => {
             patients={patients}
             availabilities={availabilities}
             addNewAppointment={addNewAppointment}
+            type="new"
           />
         </Section>
         <Section
@@ -102,8 +128,21 @@ const AppointmentsPage = () => {
             patients={patients}
             appointments={appointments}
             handleDeleteAppointment={handleDeleteAppointment}
+            handleEditAppointment={handleOpenEditForm}
           />
         </Section>
+        <EditDialog open={openDialog} setOpen={setOpenDialog}>
+          <AppointmentForm
+            getAvailabilities={getAvailabilitiesFormAPI}
+            practitioners={practitioners}
+            patients={patients}
+            availabilities={availabilities}
+            addNewAppointment={addNewAppointment}
+            defaultValue={editItem}
+            handleEditAppointment={handleEditAppointment}
+            type={'edit'}
+          />
+        </EditDialog>
       </div>
     </div>
   );
