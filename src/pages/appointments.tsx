@@ -2,11 +2,17 @@ import AppointmentForm from 'components/AppointmentForm';
 import AppointmentList from 'components/AppointmentList';
 import Section from 'components/Section';
 import AllTasks from 'components/AllTasks';
-import { appointmentsSelectors, getAppointments } from 'store/appointments';
+import {
+  addAppointments,
+  appointmentsSelectors,
+  deleteAppointments,
+  getAppointments,
+} from 'store/appointments';
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { getPatients } from 'store/patients';
 import { getPractitioners } from 'store/practitioners';
+import { getAvailabilities } from 'store/availabilities';
 
 const AppointmentsPage = () => {
   const dispatch = useDispatch();
@@ -17,9 +23,22 @@ const AppointmentsPage = () => {
     dispatch(getAppointments());
   }, []);
 
+  const getAvailabilitiesFormAPI = (practitionerId) => {
+    dispatch(getAvailabilities(practitionerId));
+  };
+
+  const addNewAppointment = (data) => {
+    dispatch(addAppointments(data));
+  };
+
+  const handleDeleteAppointment = (id) => {
+    dispatch(deleteAppointments(id));
+  };
+
   // Redux Store Data
   const practitioners = useSelector((state) => state.practitioners);
   const patients = useSelector((state) => state.patients);
+  const availabilities = useSelector((state) => state.availabilities);
   const appointments = useSelector((state) =>
     appointmentsSelectors.selectAll(state.appointments),
   );
@@ -65,7 +84,13 @@ const AppointmentsPage = () => {
           title="Appointment Form"
           className="appointment__form"
         >
-          <AppointmentForm />
+          <AppointmentForm
+            getAvailabilities={getAvailabilitiesFormAPI}
+            practitioners={practitioners}
+            patients={patients}
+            availabilities={availabilities}
+            addNewAppointment={addNewAppointment}
+          />
         </Section>
         <Section
           name="appointment-list"
@@ -76,6 +101,7 @@ const AppointmentsPage = () => {
             practitioners={practitioners}
             patients={patients}
             appointments={appointments}
+            handleDeleteAppointment={handleDeleteAppointment}
           />
         </Section>
       </div>

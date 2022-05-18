@@ -10,9 +10,8 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     case 'POST':
       {
         // to use the same variable names
-        const { patientId, practitionerId, startDate, endDate } = JSON.parse(
-          req.body,
-        );
+        const { patientId, practitionerId, startDate, endDate } = req.body;
+
         const appointment = await prisma.appointment.create({
           data: {
             patientId: parseInt(patientId),

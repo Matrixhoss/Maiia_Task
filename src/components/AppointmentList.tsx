@@ -1,5 +1,8 @@
 import {
+  Button,
   Card,
+  CardActionArea,
+  CardActions,
   CardContent,
   CardHeader,
   List,
@@ -10,7 +13,12 @@ import { practitionersSelectors } from 'store/practitioners';
 import { patientsSelectors } from 'store/patients';
 import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
 
-const AppointmentList = ({ practitioners, patients, appointments }) => {
+const AppointmentList = ({
+  practitioners,
+  patients,
+  appointments,
+  handleDeleteAppointment,
+}) => {
   // utils functions
   const getAppointmentPractitioner = (id) =>
     practitionersSelectors.selectById(practitioners, id);
@@ -50,6 +58,16 @@ const AppointmentList = ({ practitioners, patients, appointments }) => {
                   Patient : {`${patient?.firstName} ${patient?.lastName}`}
                 </Typography>
               </CardContent>
+              <CardActions>
+                <Button
+                  style={{ backgroundColor: '#f44949', color: '#fff' }}
+                  onClick={() => {
+                    handleDeleteAppointment(item.id);
+                  }}
+                >
+                  Delete
+                </Button>
+              </CardActions>
             </Card>
           );
         })}
